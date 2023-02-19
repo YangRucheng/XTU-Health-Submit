@@ -1,21 +1,59 @@
+from github.PaginatedList import PaginatedList
+from github.Repository import Repository
+from github.Issue import Issue
 from github import Github
-from typing import Union
-import os
+import logging
+import json
+import sys
+
+logging.basicConfig(level=logging.INFO)
 
 # 获取 GitHub token
-ACCESS_TOKEN: Union[str, None] = os.environ.get('ACCESS_TOKEN')
+ACCESS_TOKEN = sys.argv[1]
 
 # 连接到 GitHub API
-g = Github(ACCESS_TOKEN)
+github = Github(ACCESS_TOKEN)
 
 # 获取存储库
-repo = g.get_repo('YangRucheng/XTU-Health-Submit')
+repo: Repository = github.get_repo('YangRucheng/XTU-Health-Submit')
 
 # 获取所有开放的问题
-issues = repo.get_issues(state='open')
+issues: PaginatedList = repo.get_issues(state='open')
 
-# 处理每个问题
-for issue in issues:
-    # 在控制台打印问题标题和网址
-    print(f'Title: {issue.title}')
-    print(f'URL: {issue.html_url}')
+
+# 处理Issue
+with open('roster.json', 'r', encoding='utf-8')as fr:
+    roster: list[dict] = json.load(fr)
+
+for index, issue in enumerate(issues):
+    issue: Issue = issue
+    try:
+        logging.info(f"{index+1}. {issue.title}\n{issue.body}")
+        lines = issue.body.splitlines()
+        assert (
+            len(lines) >= 3
+            and issue.title.strip() == lines[0].strip()
+            and lines[0].isdigit()
+            and len(lines[1].strip()) > 0
+            and len(lines[2].strip()) > 0
+            and lines[2].isdigit()
+        ), "Issue格式错误"
+        stId = issue.title.strip()
+        stName = lines[1].strip()
+        stMobile = lines[2].strip()
+    except Exception as e:
+        logging.error(f"Error! {e}")
+        issue.create_comment(f"Error! {e}\n已关闭Issue, 你可以修改后重新打开此Issue!")
+    else:
+        roster.append({
+            "stId": stId,
+            "stName": stName,
+            "stMobile": stMobile
+        })
+        with open("roster.json", 'w') as fw:
+            json.dump(roster, fw, indent=4, ensure_ascii=False)
+        logging.info(f"Success!")
+        issue.create_comment(f"Success! 成功添加到名单! 自动锁定Issue!")
+        issue.lock("resolved")
+    finally:
+        issue.edit(state="closed")

@@ -1,0 +1,38 @@
+name: Add-Roster-Auto
+# 处理Issue, 将Issue中的学号和姓名添加到打卡名单中
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clone仓库
+        uses: actions/checkout@v3
+        with:
+          ref: main
+
+      - name: 安装Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: 安装依赖, 执行代码
+        run: |
+          pip install --upgrade pip
+          pip install httpx[http2]
+          pip install pygithub
+          python3 roster.py ${{ secrets.ACCESS_TOKEN }}
+
+      - name: 从Issue中添加名单添加名单
+        env:
+          GITHUB_REPO: github.com/YangRucheng/XTU-Health-Submit
+        run: |
+          git config user.name "Auto Add Roster"
+          git config user.email "admin@yangrucheng.top"
+          git add .
+          git commit -m "GitHub Actions Auto Add Roster From Issue at $(date +'%Y-%m-%d %H:%M:%S')"
+          git push --force --quiet "https://${{ secrets.ACCESS_TOKEN }}@$GITHUB_REPO" main:main

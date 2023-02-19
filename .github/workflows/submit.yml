@@ -8,7 +8,7 @@ on:
     - cron: "0 4,10,16,22 * * *"
 
 jobs:
-  build:
+  submit:
     runs-on: ubuntu-latest
 
     steps:

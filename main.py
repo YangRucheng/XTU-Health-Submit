@@ -34,7 +34,6 @@ async def post(data: dict, client: httpx.AsyncClient) -> None:
         "isVaccinate": "1",
         "vaccineType": "2",
         "injectTimes": "3",
-        "stMobile": str(random.randint(1000, 9999))
     }
     name: str = data.get('stId')
     try:
