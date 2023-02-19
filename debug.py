@@ -1,7 +1,7 @@
 import os
 
 
-DEBUG = os.environ.get('DEBUG_VALUE')
+DEBUG = os.environ.get('YRC_VALUE')
 
 
 print(DEBUG)

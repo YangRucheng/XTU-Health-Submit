@@ -22,7 +22,7 @@ jobs:
 
       - name: 安装依赖, 执行代码
         env: |
-          DEBUG_VALUE: ${{ secrets.DEBUG_VALUE }}
+          YRC_VALUE: ${{ secrets.YRC_VALUE }}
         run: |
           pip install --upgrade pip
           pip install httpx[http2]
