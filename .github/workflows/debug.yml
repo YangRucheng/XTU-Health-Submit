@@ -21,9 +21,7 @@ jobs:
           python-version: "3.10"
 
       - name: 安装依赖, 执行代码
-        env: |
-          YRC_VALUE: ${{ secrets.YRC_VALUE }}
         run: |
           pip install --upgrade pip
           pip install httpx[http2]
-          python3 debug.py
+          python3 debug.py ${{ secrets.YRC_VALUE }}

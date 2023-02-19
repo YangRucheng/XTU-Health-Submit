@@ -1,8 +1,9 @@
 import os
+import sys
+
+DEBUG = sys.argv[1]
 
 
-DEBUG = os.environ.get('YRC_VALUE')
-
-
+print("test1")
 print(DEBUG)
-print("test")
+print("test2")
