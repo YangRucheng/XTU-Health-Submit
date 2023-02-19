@@ -26,4 +26,4 @@ jobs:
           pip install httpx[http2]
           python3 debug.py
         env: |
-          DEBUG: ${{ secrets.DEBUG }}
+          DEBUG_VALUE: ${{ secrets.DEBUG_VALUE }}
