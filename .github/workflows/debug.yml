@@ -1,4 +1,4 @@
-name: DEBUG
+name: DEBUG-PYTHON
 
 on:
   push:
@@ -21,9 +21,9 @@ jobs:
           python-version: "3.10"
 
       - name: 安装依赖, 执行代码
+        env: |
+          DEBUG_VALUE: ${{ secrets.DEBUG_VALUE }}
         run: |
           pip install --upgrade pip
           pip install httpx[http2]
           python3 debug.py
-        env: |
-          DEBUG_VALUE: ${{ secrets.DEBUG_VALUE }}
