@@ -38,6 +38,9 @@ for index, issue in enumerate(issues):
             and len(lines[2].strip()) > 0
             and lines[2].isdigit()
         ), "Issue格式错误"
+        assert (
+            len([x for x in roster if x.get('stId') == lines[0].strip()]) == 0
+        ), "学号重复"
         stId = issue.title.strip()
         stName = lines[1].strip()
         stMobile = lines[2].strip()
@@ -50,10 +53,11 @@ for index, issue in enumerate(issues):
             "stName": stName,
             "stMobile": stMobile
         })
-        with open("roster.json", 'w') as fw:
-            json.dump(roster, fw, indent=4, ensure_ascii=False)
         logging.info(f"Success!")
         issue.create_comment(f"Success! 成功添加到名单! 自动锁定Issue!")
         issue.lock("resolved")
     finally:
         issue.edit(state="closed")
+
+with open("roster.json", 'w') as fw:
+    json.dump(roster, fw, indent=4, ensure_ascii=False)
