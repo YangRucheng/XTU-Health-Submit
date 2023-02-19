@@ -1,14 +1,13 @@
-from typing import Union
 import logging
 import asyncio
 import random
 import httpx
 import json
-import os
+import sys
 
 logging.basicConfig(level=logging.INFO)
 
-USER_ID_STR: Union[str, None] = os.environ.get('USER_ID')
+USER_ID_STR = sys.argv[1]
 USER_ID: list = json.loads(USER_ID_STR)
 
 
